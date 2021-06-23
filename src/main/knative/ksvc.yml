@@ -3,11 +3,37 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: qute-funq
+  labels:
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    app.kubernetes.io/name: qute-funq
 spec:
   template:
+    metadata:
+      labels:
+        app.kubernetes.io/version: 1.0.0-SNAPSHOT
+        app.kubernetes.io/name: qute-funq
     spec:
       containers:
-        - image: quay.io/pilhuhn/qute-funq:jvm
-          imagePullPolicy: Always
-          env:
-            QUARKUS_KUBERNETES_CONFIG_ENABLED: "true"
+      - image: quay.io/pilhuhn/qute-funq:jvm
+        name: qute-funq
+        imagePullPolicy: Always
+        env:
+          - name: DB_HOST
+            value: postgres
+          - name: DB_PORT
+            value: 5432
+          - name: QUARKUS_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgresql
+                key: database-user
+          - name: QUARKUS_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgresql
+                key: database-password
+          - name: QUARKUS_DATASOURCE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: postgresql
+                key: database-name

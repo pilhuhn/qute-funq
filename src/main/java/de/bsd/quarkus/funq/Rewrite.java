@@ -58,7 +58,6 @@ public class Rewrite {
 
 
         return result;
-
     }
 
     private String getTemplate(String bundle, String app, String event_type, String type) {
