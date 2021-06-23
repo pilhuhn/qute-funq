@@ -44,12 +44,16 @@ public class Rewrite {
         String jsonPayload = (String) tmpMap.get("payload");
         Map<String, Object> payload = new ObjectMapper().readValue(jsonPayload, Map.class);
 
+        // Get the template code from the DB
         String tmpl = getTemplate(bundle, app, event_type, "instant_mail");
 
+        // Parse it
         Template t = engine.parse(tmpl);
 
+        // Instantiate it with the payload of the Notification's action
         TemplateInstance ti = t.data(payload);
 
+        // Render the template with the values
         String result = ti.render();
 
 
