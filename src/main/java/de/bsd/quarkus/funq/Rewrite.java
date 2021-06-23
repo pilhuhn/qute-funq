@@ -6,11 +6,6 @@ import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
-import io.quarkus.panache.common.Parameters;
-import io.quarkus.qute.Engine;
-import io.quarkus.qute.Template;
-import io.quarkus.qute.TemplateInstance;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -19,7 +14,7 @@ import java.util.Map;
 public class Rewrite {
 
     @Inject
-    Engine engine;
+    TemplateProcessor templateProcessor;
 
     @Funq
     @CloudEventMapping(trigger = "notification", responseSource = "qute-func", responseType = "email")
@@ -44,35 +39,10 @@ public class Rewrite {
         String jsonPayload = (String) tmpMap.get("payload");
         Map<String, Object> payload = new ObjectMapper().readValue(jsonPayload, Map.class);
 
-        // Get the template code from the DB
-        String tmpl = getTemplate(bundle, app, event_type, "instant_mail");
-
-        // Parse it
-        Template t = engine.parse(tmpl);
-
-        // Instantiate it with the payload of the Notification's action
-        TemplateInstance ti = t.data(payload);
-
-        // Render the template with the values
-        String result = ti.render();
+        String result = templateProcessor.render(bundle, app, event_type, payload);
 
 
         return result;
     }
 
-    private String getTemplate(String bundle, String app, String event_type, String type) {
-
-        String bae = bundle + ":" + app + ":" + event_type;
-
-        PanacheQuery<QTemplate> qt = QTemplate.find("bae = :bae AND type = :type AND subtype = :subtype",
-                Parameters.with("bae", bae)
-                        .and("type", type)
-                        .and("subtype","body") // TODO don't hardcode
-        );
-
-        QTemplate qTemplate = qt.firstResult();
-
-        return qTemplate.body;
-
-    }
 }
