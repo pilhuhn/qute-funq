@@ -38,6 +38,16 @@ public class TemplateProcessor {
 
     String getTemplate(String bundle, String app, String event_type, String type) {
 
+        QTemplate qTemplate = getqTemplate(bundle, app, event_type, type);
+
+        if (qTemplate == null )
+            return "- NO TEMPLATE FOUND -";
+
+        return qTemplate.body;
+
+    }
+
+    private QTemplate getqTemplate(String bundle, String app, String event_type, String type) {
         String bae = bundle + ":" + app + ":" + event_type;
 
         PanacheQuery<QTemplate> qt = QTemplate.find("bae = :bae AND type = :type AND subtype = :subtype",
@@ -47,11 +57,24 @@ public class TemplateProcessor {
         );
 
         QTemplate qTemplate = qt.firstResult();
+        return qTemplate;
+    }
 
-        if (qTemplate == null )
-            return "- NO TEMPLATE FOUND -";
+    public void updateTemplate(String bundle, String app, String event_type, String type, String body) {
+        QTemplate qt = getqTemplate(bundle,app,event_type,type);
 
-        return qTemplate.body;
-
+        if (qt==null) {
+            String bae = bundle + ":" + app + ":" + event_type;
+            qt = new QTemplate();
+            qt.bae = bae;
+            qt.body = body;
+            qt.type = type;
+            qt.subtype = "body"; // TODO don't hardcode
+            QTemplate.persist(qt);
+        } else {
+            qt.body = body;
+            qt.store();
+            qt.flush();
+        }
     }
 }

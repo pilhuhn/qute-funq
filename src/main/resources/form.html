@@ -1,14 +1,24 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <form>
+  <label for="template">Template:</label>
+  <textarea rows="4" cols="40" id="template" name="template">
+##TEMPLATE##
+  </textarea>
+  <br/>
+  <label for="updateTemplate">Update Template?</label>
+  <input type="checkbox" id="updateTemplate" name="updateTemplate">
+  <p/>
+  <strong>Select bundle, app, event_type:</strong><br/>
   <label for="bundle">Bundle</label>
-  <input type="text" id="bundle" name="bundle" value="my-bundle"/><br/>
+  <input type="text" id="bundle" name="bundle" value="##BUNDLE##"/><br/>
   <label for="app">Application</label>
-  <input type="text" id="app" name="app" value="my-app" /><br/>
+  <input type="text" id="app" name="app" value="##APP##" /><br/>
   <label for="event_type">Event_type</label>
-  <input type="text" id="event_type" name="et" value="a_type"/><br/>
+  <input type="text" id="event_type" name="et" value="##ET##"/><br/>
   <p/>
   <label for="params">Params as JSON</label>
   <textarea rows="4" cols="40" id="params" name="params">
-    ##PARAMS##
+##PARAMS##
   </textarea><br/>
   <p/>
   <button type="submit">Send</button>

@@ -14,5 +14,9 @@ public class QTemplate extends PanacheEntity {
     String type; // type like 'email' or 'json'
     String subtype; // like 'header' or 'body'
 
-    String body; // The template text
+    public String body; // The template text
+
+    void store() {
+        persistAndFlush();
+    }
 }
